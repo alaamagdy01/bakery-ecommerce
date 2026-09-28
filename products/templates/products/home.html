@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Sweet Crumb Bakery - Fresh Cookies, Cakes & Donuts{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Freshly Baked Happiness, Every Day 🍩🍪🎂</h1>
+    <p>Cookies, cakes, donuts and pastries - baked daily, recommended by our AI just for you.</p>
+    <a href="{% url 'products:product_list' %}" class="btn btn-primary">Shop All Treats</a>
+</section>
+
+<div class="category-pills">
+    {% for category in categories %}
+        <a href="{% url 'products:product_list_by_category' category.slug %}">{{ category.name }}</a>
+    {% endfor %}
+</div>
+
+<div class="section-title"><h2>Featured Treats</h2></div>
+{% if featured_products %}
+<div class="product-grid">
+    {% for product in featured_products %}
+        {% include 'products/includes/product_card.html' with product=product %}
+    {% endfor %}
+</div>
+{% else %}
+<p class="empty-state">No featured products yet - check back soon!</p>
+{% endif %}
+
+<div class="section-title"><h2>🤖 Trending Now (AI Recommended)</h2></div>
+{% if trending_products %}
+<div class="product-grid">
+    {% for entry in trending_products %}
+        {% include 'products/includes/product_card.html' with product=entry.product explanation=entry.explanation %}
+    {% endfor %}
+</div>
+{% else %}
+<p class="empty-state">Trends are still baking - order something to get things started!</p>
+{% endif %}
+
+{% if user.is_authenticated %}
+<div class="section-title"><h2>🤖 Recommended For You</h2></div>
+<div class="product-grid" data-recommendation-widget data-endpoint="{% url 'recommendations:personalized_api' %}">
+    <p class="empty-state">Loading your personalized picks...</p>
+</div>
+{% endif %}
+{% endblock %}

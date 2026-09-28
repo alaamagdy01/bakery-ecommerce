@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}All Orders - Sweet Crumb Bakery{% endblock %}
+
+{% block content %}
+<h1>All Orders</h1>
+
+<form method="get" class="filter-bar">
+    <div class="form-group">
+        <label>Status</label>
+        <select name="status" onchange="this.form.submit()">
+            <option value="">All</option>
+            {% for value, label in status_choices %}
+                <option value="{{ value }}" {% if value == current_status %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</form>
+
+<table class="data-table">
+    <thead><tr><th>Order #</th><th>Customer</th><th>Date</th><th>Status</th><th>Total</th><th></th></tr></thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>#{{ order.id }}</td>
+            <td>{{ order.user.username }}</td>
+            <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
+            <td class="status-{{ order.status }}">{{ order.get_status_display }}</td>
+            <td>${{ order.total_price }}</td>
+            <td><a href="{% url 'orders:admin_order_update' order.id %}" class="btn btn-sm btn-secondary">Update Status</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">No orders found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

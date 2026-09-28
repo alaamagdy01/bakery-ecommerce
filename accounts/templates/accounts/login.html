@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Login - Sweet Crumb Bakery{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h1>Login</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+    <p>No account yet? <a href="{% url 'accounts:register' %}">Register here</a></p>
+</div>
+{% endblock %}

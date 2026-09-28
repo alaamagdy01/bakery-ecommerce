@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} - Sweet Crumb Bakery{% endblock %}
+
+{% block content %}
+<div class="form-card form-wide">
+    <h1>{{ title }}</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Save Product</button>
+        <a href="{% url 'products:product_dashboard' %}" class="btn btn-outline">Cancel</a>
+    </form>
+</div>
+{% endblock %}

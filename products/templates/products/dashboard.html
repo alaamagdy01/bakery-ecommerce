@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Product Dashboard - Sweet Crumb Bakery{% endblock %}
+
+{% block content %}
+<h1>Manage Products</h1>
+<div class="dashboard-actions">
+    <a href="{% url 'products:product_create' %}" class="btn btn-primary">+ Add Product</a>
+    <a href="{% url 'orders:admin_order_list' %}" class="btn btn-outline">View Orders</a>
+</div>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Available</th><th>Featured</th><th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.category.name }}</td>
+            <td>${{ product.price }}</td>
+            <td>{{ product.stock }}</td>
+            <td>{{ product.is_available|yesno:"Yes,No" }}</td>
+            <td>{{ product.is_featured|yesno:"Yes,No" }}</td>
+            <td>
+                <a href="{% url 'products:product_update' product.slug %}" class="btn btn-sm btn-secondary">Edit</a>
+                <a href="{% url 'products:product_delete' product.slug %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7">No products yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

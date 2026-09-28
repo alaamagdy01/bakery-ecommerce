@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} - Sweet Crumb Bakery{% endblock %}
+
+{% block content %}
+<div class="product-detail">
+    <div class="image-col">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% else %}
+            <div class="placeholder-img">🍰</div>
+        {% endif %}
+    </div>
+    <div class="info-col">
+        <span class="category-tag">{{ product.category.name }}</span>
+        <h1>{{ product.name }}</h1>
+        <div class="price" style="font-size:1.4rem;">${{ product.price }}</div>
+        <p>{{ product.description }}</p>
+        {% if product.ingredients %}<p><strong>Ingredients:</strong> {{ product.ingredients }}</p>{% endif %}
+
+        {% if product.in_stock %}
+            <p>In stock: {{ product.stock }}</p>
+            {% if user.is_authenticated %}
+            <form class="add-to-cart-form" action="{% url 'cart:add_to_cart' product.id %}" method="post">
+                {% csrf_token %}
+                <div class="quantity-selector">
+                    <label for="quantity">Qty:</label>
+                    <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.stock }}" class="qty-input">
+                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                </div>
+            </form>
+            {% else %}
+                <p><a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-primary">Login to order</a></p>
+            {% endif %}
+        {% else %}
+            <p class="alert alert-error">Currently out of stock.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="section-title"><h2>🤖 You Might Also Like</h2></div>
+<div class="product-grid" data-recommendation-widget
+     data-endpoint="{% url 'recommendations:similar_products_api' product.id %}">
+    <p class="empty-state">Loading recommendations...</p>
+</div>
+{% endblock %}

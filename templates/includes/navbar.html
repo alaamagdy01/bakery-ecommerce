@@ -1,0 +1,30 @@
+{% load static %}
+<header class="site-header">
+    <div class="container nav-container">
+        <a href="{% url 'products:home' %}" class="brand">🍪 Sweet Crumb Bakery</a>
+
+        <form action="{% url 'products:product_list' %}" method="get" class="nav-search">
+            <input type="text" name="q" placeholder="Search cookies, cakes, donuts..." value="{{ request.GET.q }}">
+            <button type="submit">Search</button>
+        </form>
+
+        <nav class="nav-links">
+            <a href="{% url 'products:product_list' %}">Shop</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'cart:cart_view' %}" class="cart-link">
+                    Cart
+                    <span class="cart-badge" id="cart-badge">{{ cart_item_count }}</span>
+                </a>
+                <a href="{% url 'orders:order_history' %}">My Orders</a>
+                {% if user.is_staff or user.profile.is_admin_staff %}
+                    <a href="{% url 'products:product_dashboard' %}">Admin</a>
+                {% endif %}
+                <a href="{% url 'accounts:profile' %}">{{ user.username }}</a>
+                <a href="{% url 'accounts:logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'accounts:login' %}">Login</a>
+                <a href="{% url 'accounts:register' %}">Register</a>
+            {% endif %}
+        </nav>
+    </div>
+</header>

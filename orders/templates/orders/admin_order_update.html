@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Update Order #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h1>Update Order #{{ order.id }}</h1>
+    <p>Customer: {{ order.user.username }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ form.status.id_for_label }}">Status</label>
+            {{ form.status }}
+        </div>
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a href="{% url 'orders:admin_order_list' %}" class="btn btn-outline">Cancel</a>
+    </form>
+</div>
+{% endblock %}

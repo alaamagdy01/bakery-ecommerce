@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Your Cart - Sweet Crumb Bakery{% endblock %}
+
+{% block content %}
+<h1>Your Cart</h1>
+
+{% if cart.items.all %}
+<table class="data-table">
+    <thead>
+        <tr><th>Product</th><th>Price</th><th>Quantity</th><th>Subtotal</th><th></th></tr>
+    </thead>
+    <tbody>
+        {% for item in cart.items.all %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>${{ item.product.price }}</td>
+            <td>
+                <form action="{% url 'cart:update_cart_item' item.id %}" method="post" style="display:inline-flex; gap:6px;">
+                    {% csrf_token %}
+                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" class="qty-input">
+                    <button type="submit" class="btn btn-sm btn-secondary">Update</button>
+                </form>
+            </td>
+            <td>${{ item.subtotal }}</td>
+            <td>
+                <form action="{% url 'cart:remove_from_cart' item.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="cart-summary">
+    <p>Total items: {{ cart.total_items }}</p>
+    <h2>Total: ${{ cart.total_price }}</h2>
+    <a href="{% url 'orders:checkout' %}" class="btn btn-primary">Proceed to Checkout</a>
+</div>
+{% else %}
+<div class="empty-state">
+    <p>Your cart is empty.</p>
+    <a href="{% url 'products:product_list' %}" class="btn btn-primary">Browse Treats</a>
+</div>
+{% endif %}
+{% endblock %}
